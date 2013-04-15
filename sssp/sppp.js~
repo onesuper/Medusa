@@ -1,0 +1,77 @@
+
+
+var g = {
+    "nodes": [0, 1, 2, 3, 4, 5],
+    "edges": [
+        [0, 1, {w: 41}],
+        [1, 2, {w: 51}],
+        [2, 3, {w: 50}],
+        [4, 3, {w: 36}],
+        [3, 5, {w: 38}],
+        [3, 0, {w: 45}],
+        [0, 5, {w: 29}],
+        [5, 4, {w: 21}],
+        [1, 4, {w: 32}],
+        [4, 2, {w: 32}],
+        [5, 1, {w: 29}],
+    ]
+}
+
+
+var graph, Q, dist;
+
+
+var restart = function() {
+    graph = new Springy.Graph();
+    graph.loadJSON(g);
+    $('#graph').springy({ graph: graph });
+
+
+    Q = [];
+    dist = [];
+
+    // initialize the value
+    for (var i in graph.nodes) {
+        graph.nodes[i].data.dist = 100000;
+        graph.nodes[i].data.prev = undefined;
+        graph.nodes[i].color = "#FFFFFF";
+        Q.push(i)// hold all the nodes in Q
+    }
+
+    for (var i in graph.edges) {
+        graph.edges[i].color = "#EEEEEE";
+    }
+
+    // make 0 the source node
+    graph.nodes[i].data.dist = 0;
+    graph.nodes[0].color = "#FFCCE0";
+    graph.notify();
+}
+
+restart();
+
+var step = function() {
+    if (queue.length == 0) return;
+    
+
+    
+
+    graph.nodes[source].color = "#BBBBBB";  
+    var rcolor = getRandomColor();
+
+    // visiting all the outgoing edges 
+    for (var i in graph.nodes[source].out) {
+        var out = graph.nodes[source].out[i];
+        if (!graph.nodes[out.target.id].data.visited) {
+            out.color = rcolor;
+            var target = out.target.id;
+            queue.push(target);  //  enqueue
+            graph.nodes[target].data.level = graph.nodes[source].data.level + 1;
+            graph.nodes[target].color = "#FFCCE0"; // in the frontier
+            graph.nodes[target].data.visited = true;
+        } else {
+            out.color = "#FFFFFF"; // hide the 'useless' edge
+        }
+    }
+    graph.notify();
+}

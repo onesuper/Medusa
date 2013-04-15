@@ -1,0 +1,159 @@
+* { margin:0; padding:0; }
+
+body {
+    background: #ffffff;
+	font: 12px "Optima", "Arial", sans-serif;
+	font-weight: normal;
+	color: #333;
+
+    margin-left: 50px;
+    margin-bottom: 50px;
+    width: 600px;
+  	text-align: left;
+    line-height: 1.6;
+}
+
+.sidenote {
+  position: absolute;
+  left: 680px;
+  width: 200px;
+  font: 0.8em verdana, sans-serif;
+  color: #444;
+  line-height: 1.4em;
+}
+
+.animation {
+  width:600px;
+  height:500px;
+  border: solid 1px #ddd;
+}
+
+.problem {
+  margin-left:30px;
+  padding-left:20px;
+  padding-right:20px;
+  border: solid 1px #ddd;
+  background: #eeeeee;
+}
+
+
+pre {
+  margin-left: 30px;
+  padding: 5px;
+  border: solid 1px #ddd;
+  background: #eeeeee;
+}
+
+.equation {
+  margin-left:30px;
+}
+
+.indented {
+  margin-left:20px;
+}
+
+.solution {
+  margin-left:30px;
+  padding-left:20px;
+  padding-right:20px;
+  border: solid 1px #ddd;
+  background: #eeeeee;
+  font-size:10px;
+}
+
+.shim {
+  width: 1px;
+  height: 1px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-top:15px;
+    margin-left: -20px;
+	font-weight: normal;
+	color: #0a0;
+	width: 800px;
+}
+
+h2 {
+    margin-left: -20px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 22px;
+	font-weight: normal;
+	color: #0a0;
+	width:620px;
+	border-bottom: solid 1px #0a0;
+}
+
+h4 {
+    margin-left: -20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 18px;
+	font-weight: normal;
+	color: #0a0;
+}
+
+h5 {
+    margin-left: -20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 13px;
+	font-weight: normal;
+	color: #0a0;
+}
+
+
+h3 {
+	color: #777;
+    margin-left: -20px;
+    margin-bottom: 20px;
+    font-size: 10px;
+	font-weight: normal;
+}
+
+ul {
+    margin-left:30px
+}
+
+li {
+    margin-top:5px;
+}
+
+p {
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+em {
+    font-style:italic;
+	color: #0a0;
+}
+
+strong {
+    font-weight:bold;
+	color: #0a0;
+}
+
+img { border:none; }
+
+a { text-decoration:underline; color: #933; border:none; }
+a:hover   { text-decoration:underline; }
+
+
+.toc {
+    position: fixed;
+    left: 780px;
+    top: 20px;
+    z-index: 100;
+    background: white;
+}
+
+.toc ul {
+    list-style-type:none;
+}
+
+.toc a {
+    text-decoration: none;
+}

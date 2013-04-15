@@ -1,0 +1,15 @@
+.button {
+    padding: 2px 5px;
+    margin: 2px;
+    background: #FC3887;
+    color: white;
+    font-size: 14px;
+    font-family: sans-serif;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.button:hover {
+    background: #F090B6;
+}
