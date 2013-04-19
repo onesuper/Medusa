@@ -45,8 +45,6 @@
 		this.nodeSet = {};
 		this.nodes = [];
 		this.edges = [];
-		this.adjacency = {};
-
 		this.nextNodeId = 0;
 		this.nextEdgeId = 0;
 		this.eventListeners = [];
@@ -86,27 +84,35 @@
 
 		if (!exists) {
 			this.edges.push(edge);
-            this.nodes[edge.source.id].out.push(edge);
+            this.nodes[edge.source.id].out.push(edge.target.id);
 		}
 
-		if (!(edge.source.id in this.adjacency)) {
-			this.adjacency[edge.source.id] = {};
-		}
-		if (!(edge.target.id in this.adjacency[edge.source.id])) {
-			this.adjacency[edge.source.id][edge.target.id] = [];
-		}
-
-		exists = false;
-		this.adjacency[edge.source.id][edge.target.id].forEach(function(e) {
-				if (edge.id === e.id) { exists = true; }
-		});
-
-		if (!exists) {
-			this.adjacency[edge.source.id][edge.target.id].push(edge);
-		}
 
 		this.notify();
 		return edge;
+	};
+    
+
+    Graph.prototype.getEdge = function(source, target) {
+        var edge = undefined;
+		this.edges.forEach(function(e) {
+			if (source == e.source.id && target == e.target.id) {
+                edge = e;
+            }
+		});
+
+	    return edge;
+
+	};
+
+    Graph.prototype.setEdgeColor = function(source, target, color) {
+		this.edges.forEach(function(e) {
+			if (source == e.source.id && target == e.target.id) {
+                e.color = color
+            }
+		});
+
+
 	};
 
 
@@ -166,17 +172,6 @@
 		}
 	};
 
-	// find ALL the edges from node1 to node2
-	Graph.prototype.getEdges = function(node1, node2) {
-		if (node1.id in this.adjacency
-			&& node2.id in this.adjacency[node1.id]) {
-			return this.adjacency[node1.id][node2.id];
-		}
-
-		return [];
-	};
-
-
 
 
 	Graph.prototype.addGraphListener = function(obj) {
@@ -215,24 +210,6 @@
 			var length = (edge.length !== undefined) ? edge.length : 1.0;
 
 			var existingSpring = false;
-
-			var from = this.graph.getEdges(edge.source, edge.target);
-			from.forEach(function(e) {
-				if (existingSpring === false && e.id in this.edgeSprings) {
-					existingSpring = this.edgeSprings[e.id];
-				}
-			}, this);
-
-			if (existingSpring !== false) {
-				return new Layout.ForceDirected.Spring(existingSpring.point1, existingSpring.point2, 0.0, 0.0);
-			}
-
-			var to = this.graph.getEdges(edge.target, edge.source);
-			from.forEach(function(e){
-				if (existingSpring === false && e.id in this.edgeSprings) {
-					existingSpring = this.edgeSprings[e.id];
-				}
-			}, this);
 
 			if (existingSpring !== false) {
 				return new Layout.ForceDirected.Spring(existingSpring.point2, existingSpring.point1, 0.0, 0.0);

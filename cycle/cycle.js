@@ -1,21 +1,20 @@
 
 
 var g = {
-    "nodes": [0, 1, 2, 3, 4, 5, 6],
+    "nodes": [0, 1, 2, 3, 4, 5],
     "edges": [
-
-        [0, 1], [1, 0],
+        [2, 1], [1, 2],
         [0, 2], [2, 0],
         [2, 3], [3, 2],
-        [2, 4], [4, 2],
-        [1, 5], [5, 1],
-        [1, 6], [6, 1],
+        [1, 4], [4, 1],
+        [3, 4], [4, 3],
         [4, 5], [5, 4]
+
     ]
 }
 
 
-var graph, stack;
+var graph,stack;
 var root = 0;
 var pink = "#FFCCE0";
 var white = "#FFFFFF";
@@ -29,11 +28,12 @@ var restart = function() {
     graph.loadJSON(g);
     $('#graph').springy({ graph: graph });
 
+    // clear the stack
     stack = [];
 
     // initialize the value
     for (var i in graph.nodes) {
-        graph.nodes[i].data.level = -1;
+        graph.nodes[i].data.prev = undefined;
         graph.nodes[i].color = white;
     }
 
@@ -42,9 +42,9 @@ var restart = function() {
     }
 
     stack.push(root);
-    graph.nodes[root].data.level = 0;
     graph.nodes[root].color = pink;
-  
+    
+
     graph.notify();
 }
 
@@ -53,31 +53,22 @@ restart();
 var step = function() {
     if (stack.length == 0) return;
     
+    var u = stack.pop();           
+    graph.nodes[u].color = black;  
 
-    var u = stack[stack.length-1];   // peek          
     var rcolor = getRandomColor();
-    var has_unvisited_children = false;
 
-
-    // visit neighbours in reversed order
-    for (var i=graph.nodes[u].out.length-1; i>=0; i--) {
+    for (var i in graph.nodes[u].out) {
         var v = graph.nodes[u].out[i];
         if (graph.nodes[v].color == white) {
             graph.setEdgeColor(u, v, rcolor);
             stack.push(v);  
-            graph.nodes[v].data.level = graph.nodes[u].data.level + 1;
+            graph.nodes[v].data.prev = u;
             graph.nodes[v].color = pink; // in the frontier
-            has_unvisited_children = true;
-          
         } else {
-            e = graph.getEdge(u, v);
-            if (e.color == gray) e.color = white; // hide the 'useless' edge
+            if (graph.nodes[u].data.prev != v) alert(u + '\'s parent is not ' + v + " ==> cycle detected!");
+            graph.setEdgeColor(u, v, "#FFFFFF"); // hide the 'useless' edge
         }
-    }
-
-    if (has_unvisited_children == false) {
-        graph.nodes[u].color = black;
-        stack.pop();
     }
 
     graph.notify();

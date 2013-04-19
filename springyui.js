@@ -74,7 +74,6 @@ jQuery.fn.springy = function(params) {
 	};
 
 
- 
 
 
 	Springy.Node.prototype.getWidth = function() {
@@ -110,20 +109,10 @@ jQuery.fn.springy = function(params) {
 			var direction = new Springy.Vector(x2-x1, y2-y1);
 			var normal = direction.normal().normalise();
 
-			var from = graph.getEdges(edge.source, edge.target);
-			var to = graph.getEdges(edge.target, edge.source);
 
-			var total = from.length + to.length;
-
-			// Figure out edge's position in relation to other edges between the same nodes
-			var n = 0;
-			for (var i=0; i<from.length; i++) {
-				if (from[i].id === edge.id) {
-					n = i;
-				}
-			}
-           
-
+            // assume there are two edges between two nodes at most
+            var total = 0;
+            var n = 0;
 			var spacing = 6.0;
 
 			// Figure out how far off center the line should be drawn
@@ -151,9 +140,9 @@ jQuery.fn.springy = function(params) {
 			arrowWidth = 1 + ctx.lineWidth;
 			arrowLength = 8;
 
-			var directional = (edge.data.directional !== undefined) ? edge.data.directional : true;
-
-
+            // must be directional
+            var directional;
+            directional = true;
 
 			// line
 			var lineEnd;
@@ -163,7 +152,6 @@ jQuery.fn.springy = function(params) {
 			} else {
 				lineEnd = s2;
 			}
-
 
 			ctx.strokeStyle = stroke;
 			ctx.beginPath();
@@ -188,21 +176,27 @@ jQuery.fn.springy = function(params) {
 			}
 
 
-			// edge data
-			ctx.save();
-			ctx.textAlign = "center";
-			ctx.textBaseline = "top";
-			ctx.font = "12px sans-serif";
-			ctx.fillStyle = "#444444";
-            var lineHeight = 0;
-            for (var p in edge.data) {
-                var text = p + ': ' + edge.data[p]; 
-                ctx.fillText(text,(s1.x+lineEnd.x)/2, (s1.y+lineEnd.y)/2 + lineHeight);
-                lineHeight += 10;
+            // if reversed edge exists, don't draw the edge data
+            var show = true;
+            if (graph.getEdge(edge.target.id, edge.source.id) != undefined && edge.target.id > edge.source.id)
+                show = false;
+
+            if (show) {
+			    // edge data
+			    ctx.save();
+			    ctx.textAlign = "center";
+			    ctx.textBaseline = "top";
+			    ctx.font = "12px sans-serif";
+			    ctx.fillStyle = "#444444";
+                var lineHeight = 0;
+                for (var p in edge.data) {
+                    var text = p + ': ' + edge.data[p]; 
+                    ctx.fillText(text,(s1.x+lineEnd.x)/2, (s1.y+lineEnd.y)/2 + lineHeight);
+                    lineHeight += 10;
+                }
+			    ctx.restore();
+
             }
-			ctx.restore();
-
-
 
 		},
 		function drawNode(node, p) {
@@ -217,17 +211,20 @@ jQuery.fn.springy = function(params) {
 			//ctx.clearRect(s.x - boxWidth/2, s.y - 10, boxWidth, 20);
 
 
+            
+            //draw cirle
             ctx.strokeStyle = "#000000";
             ctx.beginPath();
             ctx.arc(s.x, s.y, boxWidth/2, 0, 2*Math.PI);
             ctx.fillStyle = node.color;   //  color of node
             ctx.fill();
             ctx.stroke();
+
             
 
+            ctx.fillStyle = node.color > "#7fffff" ? 'black':'white';
+            //ctx.fillStyle = (parseInt(node.color.substr(1, 6), 16) > 0xffffff/2) ? 'black':'white';
 
-            // id
-            ctx.fillStyle = "#000000";
 			ctx.textAlign = "left";
 			ctx.textBaseline = "top";
 			ctx.font = "15px sans-serif";
@@ -241,7 +238,11 @@ jQuery.fn.springy = function(params) {
             ctx.font = "12px sans-serif";
             var lineHeight = 18;
             for (var p in node.data) {
-                var text = p + ': ' + node.data[p]; 
+                var value = node.data[p];
+                if (value===undefined) value = "?";
+                if (value===false) value = "F";
+                if (value===true) value = "T";
+                var text = p + ': ' + value; 
                 ctx.fillText(text, s.x, s.y + lineHeight);
                 lineHeight += 15;
             }
