@@ -22,7 +22,7 @@ things = ["undershorts", "pants", "belt", "socks", "shoes", "shirt", "tie", "jac
 
 
 
-var graph, stack, at, at_color;
+var graph, S, at;
 var time = 0;
 var pink = "#FFCCE0";
 var white = "#FFFFFF";
@@ -36,7 +36,7 @@ var restart = function() {
     graph.loadJSON(g);
     $('#graph').springy({ graph: graph });
 
-    stack = [];
+    S = [];
 
     // initialize the value
     for (var i in graph.nodes) {
@@ -59,7 +59,7 @@ restart();
 
 var step = function() {
 
-    if (stack.length == 0) {
+    if (S.length == 0) {
         var find_at = false; 
         for (var i=0; i<graph.nodes.length; i++) {
             if (graph.nodes[i].color == white) {
@@ -70,37 +70,45 @@ var step = function() {
         } 
         if (find_at==false) return;
         
-        stack.push(at);
-        at_color = getRandomColor()
-        graph.nodes[at].color = at_color;
-        graph.nodes[at].data.time = time;
-
+        S.push(at);
+        graph.nodes[at].color = pink;
         graph.notify();
+
         return;
     } else {
-        var u = stack.pop();    
-        graph.nodes[u].data.time = time;
-        graph.nodes[u].color = at_color;  
 
+        var u = S[S.length-1];   // peek   
+    
+        
         var rcolor = getRandomColor();
+        var has_unvisited_children = false;
 
         for (var i in graph.nodes[u].out) {
             var v = graph.nodes[u].out[i];
             if (graph.nodes[v].color == white) {
                 graph.setEdgeColor(u, v, rcolor);
-                stack.push(v);  
+                S.push(v);  
                 graph.nodes[v].color = pink;
-               
+                has_unvisited_children = true;
             } else {
-                graph.setEdgeColor(u, v, "#FFFFFF"); // hide the 'useless' edge
+                e = graph.getEdge(u, v);
+                if (e.color == gray) e.color = white;
             }
            
         }
-
+        
+        
+        if (has_unvisited_children == false) {
+            graph.nodes[u].color = black;
+            graph.nodes[u].data.time = time;
+            S.pop();
+        }
+        
         graph.notify();
     }
 
-    time += 1
+    time += 1;
+   
 }
 
 

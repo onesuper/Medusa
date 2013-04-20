@@ -14,7 +14,7 @@ var g = {
 }
 
 
-var graph,stack;
+var graph,S;
 var root = 0;
 var pink = "#FFCCE0";
 var white = "#FFFFFF";
@@ -28,8 +28,8 @@ var restart = function() {
     graph.loadJSON(g);
     $('#graph').springy({ graph: graph });
 
-    // clear the stack
-    stack = [];
+    // clear the S
+    S = [];
 
     // initialize the value
     for (var i in graph.nodes) {
@@ -41,7 +41,7 @@ var restart = function() {
         graph.edges[i].color = gray;
     }
 
-    stack.push(root);
+    S.push(root);
     graph.nodes[root].color = pink;
     
 
@@ -51,24 +51,40 @@ var restart = function() {
 restart();
 
 var step = function() {
-    if (stack.length == 0) return;
+    if (S.length == 0) return;
     
-    var u = stack.pop();           
-    graph.nodes[u].color = black;  
-
+    if (S.length == 0) return;
+    
+    var u = S[S.length-1];   // peek          
     var rcolor = getRandomColor();
+    var has_unvisited_children = false;
 
-    for (var i in graph.nodes[u].out) {
+
+    // visit neighbours in reversed order
+    for (var i=graph.nodes[u].out.length-1; i>=0; i--) {
         var v = graph.nodes[u].out[i];
-        if (graph.nodes[v].color == white) {
+
+        if (graph.nodes[v].color == pink && graph.nodes[u].data.prev != v) 
+        {
+            alert(u + " -> "+ v + " is a back edge!");
+            graph.setEdgeColor(u, v , "red");
+            
+        } else if (graph.nodes[v].color == white) {
             graph.setEdgeColor(u, v, rcolor);
-            stack.push(v);  
-            graph.nodes[v].data.prev = u;
+            S.push(v);  
+            graph.nodes[v].data.prev = u
             graph.nodes[v].color = pink; // in the frontier
+            has_unvisited_children = true;
+          
         } else {
-            if (graph.nodes[u].data.prev != v) alert(u + '\'s parent is not ' + v + " ==> cycle detected!");
-            graph.setEdgeColor(u, v, "#FFFFFF"); // hide the 'useless' edge
+            e = graph.getEdge(u, v);
+            if (e.color == gray) e.color = white; // hide the 'useless' edge
         }
+    }
+
+    if (has_unvisited_children == false) {
+        graph.nodes[u].color = black;
+        S.pop();
     }
 
     graph.notify();

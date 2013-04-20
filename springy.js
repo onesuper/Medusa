@@ -398,7 +398,7 @@
 			}
 		});
 
-		var padding = topright.subtract(bottomleft).multiply(0.1); // some padding
+		var padding = topright.subtract(bottomleft).multiply(0.1).add(new Vector(0, 0.3)); // some padding
 
 		return {bottomleft: bottomleft.subtract(padding), topright: topright.add(padding)};
 	};

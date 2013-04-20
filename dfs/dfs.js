@@ -15,7 +15,7 @@ var g = {
 }
 
 
-var graph, stack;
+var graph, S;
 var root = 0;
 var pink = "#FFCCE0";
 var white = "#FFFFFF";
@@ -29,7 +29,7 @@ var restart = function() {
     graph.loadJSON(g);
     $('#graph').springy({ graph: graph });
 
-    stack = [];
+    S = [];
 
     // initialize the value
     for (var i in graph.nodes) {
@@ -41,7 +41,7 @@ var restart = function() {
         graph.edges[i].color = gray;
     }
 
-    stack.push(root);
+    S.push(root);
     graph.nodes[root].data.level = 0;
     graph.nodes[root].color = pink;
   
@@ -51,10 +51,9 @@ var restart = function() {
 restart();
 
 var step = function() {
-    if (stack.length == 0) return;
+    if (S.length == 0) return;
     
-
-    var u = stack[stack.length-1];   // peek          
+    var u = S[S.length-1];   // peek          
     var rcolor = getRandomColor();
     var has_unvisited_children = false;
 
@@ -64,7 +63,7 @@ var step = function() {
         var v = graph.nodes[u].out[i];
         if (graph.nodes[v].color == white) {
             graph.setEdgeColor(u, v, rcolor);
-            stack.push(v);  
+            S.push(v);  
             graph.nodes[v].data.level = graph.nodes[u].data.level + 1;
             graph.nodes[v].color = pink; // in the frontier
             has_unvisited_children = true;
@@ -77,7 +76,7 @@ var step = function() {
 
     if (has_unvisited_children == false) {
         graph.nodes[u].color = black;
-        stack.pop();
+        S.pop();
     }
 
     graph.notify();

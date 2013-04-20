@@ -134,7 +134,9 @@ jQuery.fn.springy = function(params) {
 			var arrowWidth;
 			var arrowLength;
 
-			var weight = (edge.data.weight !== undefined) ? edge.data.weight : 1.0;
+			//var weight = (edge.data.weight !== undefined) ? edge.data.weight : 1.0;
+            
+            weight = 1.0;
 
 			ctx.lineWidth = Math.max(weight *  2, 0.1);
 			arrowWidth = 1 + ctx.lineWidth;
